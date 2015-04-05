@@ -1,6 +1,8 @@
 Quick add virtual host for apache
 ===
 
+virthost.sh [domain] [port] [user]
+
 EXAMPLE: add host website.dev
 
 cd ~/utilites/virthost
@@ -15,6 +17,16 @@ RESULT:
 3. Сreate folder /var/www/website.dev in permission current user
 4. Reload apache
 5. Working pages http://website.dev/index.html and  http://www.website.dev/index.html
+
+
+MORE EXAMPLES:
+
+sh virthost.sh website.dev 8080
+
+sh virthost.sh website.dev 8080 webmaster
+
+
+
 
 
 

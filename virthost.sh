@@ -1,6 +1,6 @@
 #!/bin/sh
 
-	#parametrs 1 - domain, 2 - port (default 80) 
+	#parametrs 1 - domain, 2 - port (default 80), 3 - user 
 
 	if [ $# -eq 0 ];   then
     	echo "No arguments supplied"
@@ -19,6 +19,14 @@
     else
     	PORT=$2	
 	fi
+
+	#correct port
+	if [ -z "$3" ];  then
+    	CUSER = $3
+    else
+    	CUSER = $USER
+	fi
+
 
 	#save standart config virtualhost
 	sudo sh -c " echo '<VirtualHost *:$PORT>
@@ -44,7 +52,7 @@
 	#  create dir project
 	if ! [ -d $DIR ]; then
 		sudo mkdir -p $DIR
-		sudo chown -R $USER:www-data $DIR
+		sudo chown -R $CUSER:www-data $DIR
 		chmod -R 755 $DIR
 		
 		
