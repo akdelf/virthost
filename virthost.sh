@@ -8,9 +8,9 @@
 	fi
 	
 	VFILE=$1.conf
-	DIR=/var/www/$1/public # standart ubuntu directory www projects
-	MAIL=ak@argumenti.ru
-	INDEX=$DIR/index.html
+	DIR=/var/www/$1 # standart ubuntu directory www projects
+	PUBDIR=$DIR/public
+	INDEX=$PUBDIR/index.html
 
 		
 	#correct port
@@ -23,26 +23,23 @@
 	
 	#user host
 	if [ -z "$3" ];  then
-    	CUSER = $3
+    	CUSER=www-data
     else
-    	CUSER = 'www-data'
-	fi
+    	CUSER=$3
+    fi
 
-
-	#save standart config virtualhost
+    #save standart apache virtualhost
 	sudo sh -c " echo '<VirtualHost *:$PORT>
-    	ServerAdmin $MAIL
     	ServerName $1
     	ServerAlias www.$1
-    	DocumentRoot $DIR
+    	DocumentRoot $PUBDIR
     	ErrorLog ${APACHE_LOG_DIR}/error.log
     	CustomLog ${APACHE_LOG_DIR}/access.log combined
-    	 <Directory \"$DIR\">
-                AllowOverride All
-                Options +Indexes
-                DirectoryIndex index.php index.html
+    	 <Directory \"$PUBDIR\">
+            AllowOverride All
+            Options +Indexes
+            DirectoryIndex index.php index.html
         </Directory>
-
 	</VirtualHost>' > /etc/apache2/sites-available/$VFILE"
 
 	echo "Updated config file $VFILE\n"
@@ -58,10 +55,9 @@
 	
 	#  create dir project
 	if ! [ -d $DIR ]; then
-		sudo mkdir -p $DIR
+		sudo mkdir -p $PUBDIR
+		sudo chmod -R 755 $DIR
 		sudo chown -R $CUSER:www-data $DIR
-		chmod -R 755 $DIR
-		
 		
 		echo "<html><body><h1>OPEN SITE:$1</h1></body></html>" > $INDEX
 
