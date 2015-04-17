@@ -1,11 +1,11 @@
-Quick add virtual host for apache
+Quick add standart virtual host for apache
 ===
 
 virthost.sh [domain] [port] [user]
 
 EXAMPLE: add host website.dev
 
-cd ~/utilites/virthost
+cd ~/scripts/virthost
 
 sh virthost.sh website.dev
 
@@ -21,9 +21,9 @@ RESULT:
 
 MORE EXAMPLES:
 
-sh virthost.sh website.dev 8080
+sh virthost.sh website.dev 8080 #apache port 8080
 
-sh virthost.sh website.dev 8080 webmaster
+sh virthost.sh website.dev 80 webmaster # user folder webmaster 
 
 
 
