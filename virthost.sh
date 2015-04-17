@@ -20,11 +20,12 @@
     	PORT=$2	
 	fi
 
-	#correct port
+	
+	#user host
 	if [ -z "$3" ];  then
     	CUSER = $3
     else
-    	CUSER = $USER
+    	CUSER = 'www-data'
 	fi
 
 
@@ -36,6 +37,12 @@
     	DocumentRoot $DIR
     	ErrorLog ${APACHE_LOG_DIR}/error.log
     	CustomLog ${APACHE_LOG_DIR}/access.log combined
+    	 <Directory \"$DIR\">
+                AllowOverride All
+                Options +Indexes
+                DirectoryIndex index.php index.html
+        </Directory>
+
 	</VirtualHost>' > /etc/apache2/sites-available/$VFILE"
 
 	echo "Updated config file $VFILE\n"
