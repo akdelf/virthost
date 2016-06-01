@@ -1,0 +1,5 @@
+WWWDIR=/var/www/
+SUBDIR=public
+CUSER=www-data
+NGINXPORT=80
+APACHEPORT=80
