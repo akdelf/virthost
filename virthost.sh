@@ -1,6 +1,6 @@
 #!/bin/sh
 
-	#parametrs 1 - domain 2 - user
+	#parametrs 1 - domain 2 - ip 3 - user
 
 	if [ $# -eq 0 ];   then
     	echo "No arguments supplied"
@@ -13,10 +13,23 @@
 	DIR=$WWWDIR$1 # standart ubuntu directory www projects
 	PUBDIR=$DIR/$SUBDIR
 	INDEX="$PUBDIR/index"
-	
-	#user host
+
+    #ip
+    if [ -z "$2" ]; then
+        $ip = "127.0.0.1"
+    else
+        $ip = $2     
+    fi    
+
+
+
+    #user host
 	if ! [ -n $CUSER ];  then
-    	CUSER=$2
+    	if [ -z "$3" ]; then
+            CUSER=$1
+        else
+            CUSER=$3        
+        fi    
     fi
 
     ApacheThread=`ps -A|grep apache2|wc -l`
@@ -60,8 +73,8 @@
     	}
 
     	## PHP
-    	location / {
-    		try_files $uri $uri/ /index.php?$args;
+    	location / {	
+            try_files $uri $uri/ /index.php?q=$uri&$args;
     	}	
     	
 
@@ -108,7 +121,10 @@
 
 
 		echo -e "reload nginx ..." >&2
-		systemctl reload nginx
+		#systemctl reload nginx
+        service nginx reload        
+
+
 	   
     elif [ $NginxThread -eq 0 ]
     	then
@@ -133,7 +149,8 @@
 		fi	
 
 		echo -e "restart apache ..." >&2
-		systemctl reload apache	
+		#systemctl reload apache
+        service apache reload	
 
 
     fi
@@ -148,7 +165,13 @@
 		sudo sh -c "echo '<html><body><h1>OPEN SITE:$1</h1></body></html>' > $INDEX.html"
 		sudo sh -c "echo '<?php phpinfo();' > $INDEX.php"
 
-		echo -e "cmod $PUBDIR ..." >&2
+		echo -e "init user ..." >&2
+        grep "$CUSER" /etc/passwd >/dev/null
+        if [ $? -ne 0 ]; then
+            useradd -d $DIR $CUSER
+        fi
+
+        echo -e "cmod $PUBDIR ..." >&2
 		sudo chown -R $CUSER:$CUSER $DIR
 		sudo chgrp -R $CUSER $DIR
 		sudo chmod -R g+rwx $DIR # читать редактировать создавать
@@ -157,7 +180,7 @@
 	#add host in localhost
 	if ! grep "$1" /etc/hosts; then
 		echo "Аdd host $1 ..." >&2
-		sudo sh -c "echo '127.0.0.1 $1 www.$1' >>  /etc/hosts"
+		sudo sh -c "echo '$ip $1 www.$1' >>  /etc/hosts"
 	fi
 
 
