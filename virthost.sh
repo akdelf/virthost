@@ -154,7 +154,14 @@
     fi
    	
 
-	#  create dir project
+	echo -e "init user ..." >&2
+    grep "$CUSER" /etc/passwd >/dev/null
+    if [ $? -ne 0 ]; then
+        useradd -d $DIR $CUSER
+    fi
+
+
+    #  create dir project
 	if ! [ -d $PUBDIR ]; then
 		echo -e "create directory $PUBDIR ..." >&2
 		sudo mkdir -p $PUBDIR
@@ -163,17 +170,16 @@
 		sudo sh -c "echo '<html><body><h1>OPEN SITE:$1</h1></body></html>' > $INDEX.html"
 		sudo sh -c "echo '<?php phpinfo();' > $INDEX.php"
 
-		echo -e "init user ..." >&2
-        grep "$CUSER" /etc/passwd >/dev/null
-        if [ $? -ne 0 ]; then
-            useradd -d $DIR $CUSER
-        fi
+		
 
         echo -e "cmod $PUBDIR ..." >&2
 		sudo chown -R $CUSER:$CUSER $DIR
 		sudo chgrp -R $CUSER $DIR
 		sudo chmod -R g+rwx $DIR # читать редактировать создавать
-	fi
+	else
+        echo "Folder no empty ..." >&2
+
+    fi
 
 	#add host in localhost
 	if ! grep "$1" /etc/hosts; then
