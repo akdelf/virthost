@@ -16,15 +16,13 @@
 
     #ip
     if [ -z "$2" ]; then
-        $ip = "127.0.0.1"
+        ip="127.0.0.1"
     else
-        $ip = $2     
-    fi    
+        ip=$2     
+    fi  
 
-
-
-    #user host
-	if ! [ -n $CUSER ];  then
+   #user host
+	if [ -z "$CUSER" ];  then
     	if [ -z "$3" ]; then
             CUSER=$1
         else
